@@ -2,6 +2,7 @@ import hashlib
 import numpy as np
 import random
 from PIL import Image, ImageFilter
+import os
 
 PALETTES = [
     ["#0f172a", "#38bdf8", "#1e293b"],
@@ -66,15 +67,16 @@ def generate_avatar(text, size=1024):
     return Image.fromarray(img_data.astype(np.uint8))
 
 if __name__ == "__main__":
-    nick = input("Ник (пусто для случайного): ").strip()
+    nick = input("Ник: ").strip()
     if not nick:
         nick = f"user_{random.randint(1000, 9999)}"
         
-    img = generate_avatar(nick)
+    # Создаем папку, если её нет
+    os.makedirs("output", exist_ok=True)
     
-    # Небольшое размытие в конце для мягкости
+    img = generate_avatar(nick)
     img = img.filter(ImageFilter.SMOOTH_MORE)
     
-    path = f"avatar_{nick}.png"
+    path = os.path.join("output", f"avatar_{nick}.png")
     img.save(path)
-    print(f"Готово! Сохранено как {path}")
+    print(f"Готово! Сохранено в: {path}")
